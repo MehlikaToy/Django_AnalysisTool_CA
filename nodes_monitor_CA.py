@@ -3,10 +3,35 @@ Author: Gerry Meixiong
 Made July 2015
 Markov States of Hepatitis B
 '''
-
 pVar = -1.0
 dVar = -2.0
 
+cCHB = 1483
+cCirr = 4414
+cDecompCirr = 11690
+cEntecavir = 8400
+cHCC = 46538
+cLT = 182040
+cMonitor = 710
+discountC = 0.03
+discountU = 0.03
+uCHB = 0.85
+uCHBinactive = 0.95
+uCHBseroclearance = 0.99
+uResolution = 1
+uSVR = 1
+uSeroclearance = 1
+cTenofovir = 11964
+
+tested_rate = 0.346
+followup_rate = 0.57
+treatment_rate = 0.30
+
+p_adherence = 0.85
+p_monitor = 0.351
+
+# Touch this part
+cohortPop = 100
 class BasicNode(object):
 
     def __init__(self, OV):
