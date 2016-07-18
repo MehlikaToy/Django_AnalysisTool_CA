@@ -6,120 +6,115 @@ Markov Model Emulator of Hepatitis B
 
 
 from nodes_monitor_e1 import *
-# from nodes_monitor_e2 import *
-# from nodes_monitor_e3 import *
 
-def markovMain1(age = 49, total_stages = 40, endemicity = 1, stage_timeFrame = 1, initialList=[]):
+# Touch this part
+age = 25
+total_stages = 23
+stage_timeFrame = 1  # in years
+# The initial Probabilities
+initialList = [Node36(0), Node02(0.0762), Node04(0.0176), Node05(0.0187), Node06(0), Node26(0.3102), Node28(0.2794), Node29(0.2979), Node30(0)]
+#initialList = getInitialNodes(age)
+
+age += 1
+
+print '>>> INITIAL LIST Stage: BASE, Age: %s' % (age)
+printList(initialList)
 
 
-    print '>>> INITIAL LIST Stage: BASE, Age: %s' % (age)
-    printList(initialList)
-    print '>>> COST'
-    printCost(initialList, 0, total_stages)
-    print '>>> UTILITY'
-    printUtility(initialList, 0, total_stages, age)
+# Don't touch this part
+cummDict = {}
+oldList = initialList
+newList = []
 
-    # Don't touch this part
-    cummDict = {}
-    oldList = initialList
-    newList = []
+guacDict = {}
 
-    guacDict = {}
+DeathHBV = [['Stages', 'Treatment (dotted)', 'Natural History (solid)']]
+Cirrhosis = [['Stages', 'Treatment (dotted)', 'Natural History (solid)']]
+HCC = [['Stages', 'Treatment (dotted)', 'Natural History (solid)']]
+LT = [['Stages', 'Treatment (dotted)', 'Natural History (solid)']]
 
-    DeathHBV = [['Stages', 'Treatment (dotted)', 'Natural History (solid)']]
-    Cirrhosis = [['Stages', 'Treatment (dotted)', 'Natural History (solid)']]
-    HCC = [['Stages', 'Treatment (dotted)', 'Natural History (solid)']]
-    LT = [['Stages', 'Treatment (dotted)', 'Natural History (solid)']]
+cummCirr = 0;
 
-    assert 1 == getOrginValSum(oldList), 'Initial List is %.2f not 1' % (getOrginValSum(oldList))
+for curr_stage in range(1, total_stages+2):
 
-    cummCirr = 0;
-    cumulativeCost = sumCost(oldList, 0, total_stages)
-    cumulativeQALY = sumUtility(oldList, 0, age, total_stages)
 
-    for curr_stage in range(1, total_stages+2):
+    if curr_stage != 1:
+        oldList = newList
+        newList = []
 
-        age += 1
+    for node in oldList:
 
-        if curr_stage != 1:
-            oldList = newList
-            newList = []
+        if age - 1 >= 50 and node.getProbValAFF():
+            temp = node.getProbValAFF()
+        elif age - 1 >= 40 and node.getProbValAFR():
+            temp = node.getProbValAFR()
+        elif age - 1 <= 25 and node.getProbValUTF():
+            temp = node.getProbValUTF()
+        elif age - 1 > 25 and node.getProbValATF():
+            temp = node.getProbValATF()
+        elif age - 1 <= 30 and node.getProbValLET():
+            temp = node.getProbValLET()
+        elif age - 1 >= 30 and node.getProbValAT():
+            temp = node.getProbValAT()
+        else:
+            temp = node.getProbValUT()
 
-        for node in oldList:
+        try:
+            for i in range(0, len(temp)):
+                temp[i] = temp[i] * node.secBranch[i]
+        except:
+            pass
 
-            if age - 1 >= 50 and node.getProbValAFF():
-                temp = node.getProbValAFF()
-            elif age - 1 >= 40 and node.getProbValAFR():
-                temp = node.getProbValAFR()
-            elif age - 1 <= 25 and node.getProbValUTF():
-                temp = node.getProbValUTF()
-            elif age - 1 > 25 and node.getProbValATF():
-                temp = node.getProbValATF()
-            elif age - 1 <= 30 and node.getProbValLET():
-                temp = node.getProbValLET()
-            elif age - 1 >= 30 and node.getProbValAT():
-                temp = node.getProbValAT()
-            else:
-                temp = node.getProbValUT()
+        temp = dVarReplace(temp, age)
+        temp = pVarReplace(temp)
+        temp, cummCirr = node.nextStage(node.getDestStates(), node.getOriginValue(), temp, cummCirr, currNode = node)
 
+        for i in temp:
+            if i.getGuac() != 0:
+                guacDict[i.getVarName()] = i.getGuac()
+
+        for i in temp:
+            newList.append(i)
+
+    newList = trimList(newList)
+
+    def getCummDict(query):
+        try:
+            return cummDict[query]
+        except:
+            return 0
+
+    t_death = [curr_stage ,0, 0]
+    t_cirr = [curr_stage ,0, 0]
+    t_hcc = [curr_stage ,0, 0]
+    t_lt =[curr_stage ,0, 0]
+
+    for node in newList:
+        try:
+            cummDict[node.getVarName()] += (node.getOriginValue() - guacDict[node.getVarName()]) * cohortPop
+        except:
             try:
-                for i in range(0, len(temp)):
-                    temp[i] = temp[i] * node.secBranch[i]
+                cummDict[node.getVarName()] += node.getOriginValue() * cohortPop
             except:
-                pass
+                cummDict[node.getVarName()] = node.getOriginValue() * cohortPop
 
-            temp = dVarReplace(temp, age)
-            temp = pVarReplace(temp)
-            temp, cummCirr = node.nextStage(node.getDestStates(), node.getOriginValue(), temp, cummCirr, currNode = node)
+    t_death[1] = round(getCummDict('Death HBV'), 3)
+    t_death[2] = round(getCummDict('Death HBV NH'), 3)
 
-            for i in temp:
-                if i.getGuac() != 0:
-                    guacDict[i.getVarName()] = i.getGuac()
+    t_cirr[1] = round(cummCirr * cohortPop, 3)
+    t_cirr[2] = round(getCummDict('Cirrhosis NH'), 3)
 
-            for i in temp:
-                newList.append(i)
+    t_hcc[1] = round(getCummDict('HCC'), 3)
+    t_hcc[2] = round(getCummDict('HCC NH'), 3)
 
-        newList = trimList(newList)
+    t_lt[1] = round(getCummDict('Liver Transplantation'), 3)
+    t_lt[2] = round(getCummDict('Liver Transplantation NH'), 3)
 
-        def getCummDict(query):
-            try:
-                return cummDict[query]
-            except:
-                return 0
+    DeathHBV.append(t_death)
+    Cirrhosis.append(t_cirr)
+    HCC.append(t_hcc)
+    LT.append(t_lt)
 
-        t_death = [curr_stage ,0, 0]
-        t_cirr = [curr_stage ,0, 0]
-        t_hcc = [curr_stage ,0, 0]
-        t_lt =[curr_stage ,0, 0]
-
-        for node in newList:
-            try:
-                cummDict[node.getVarName()] += (node.getOriginValue() - guacDict[node.getVarName()]) * cohortPop
-            except:
-                try:
-                    cummDict[node.getVarName()] += node.getOriginValue() * cohortPop
-                except:
-                    cummDict[node.getVarName()] = node.getOriginValue() * cohortPop
-
-        t_death[1] = round(getCummDict('Death HBV'), 3)
-        t_death[2] = round(getCummDict('Death HBV NH'), 3)
-
-        t_cirr[1] = round(cummCirr * cohortPop, 3)
-        t_cirr[2] = round(getCummDict('Cirrhosis NH'), 3)
-
-        t_hcc[1] = round(getCummDict('HCC'), 3)
-        t_hcc[2] = round(getCummDict('HCC NH'), 3)
-
-        t_lt[1] = round(getCummDict('Liver Transplantation'), 3)
-        t_lt[2] = round(getCummDict('Liver Transplantation NH'), 3)
-
-        DeathHBV.append(t_death)
-        Cirrhosis.append(t_cirr)
-        HCC.append(t_hcc)
-        LT.append(t_lt)
-
-        cumulativeCost += sumCost(newList, curr_stage, total_stages)
-        cumulativeQALY += sumUtility(newList, curr_stage, age, total_stages)
 
     output = {}
     for i in newList:
@@ -149,5 +144,17 @@ def markovMain1(age = 49, total_stages = 40, endemicity = 1, stage_timeFrame = 1
 
 
 
-    return {'output': output, 'finalList': finalList, 'DeathHBV': DeathHBV, 'Cirrhosis': Cirrhosis, 'HCC': HCC, 'LT': LT}
+    print "====================================================\n"
+    print "                     STAGE:", curr_stage
+    print "                     AGE:", age
+    printList(newList)
+    print "Cumulative States:", cummDict
+    print ""
+
+    age += stage_timeFrame
+
+if round(sumList(initialList), 10) == round(sumList(newList), 10):
+    print "No Data Leak"
+else:
+    print "Data Leak Check Node Values"
 
