@@ -9,6 +9,7 @@ from nodes_monitor_e1 import *
 
 # Touch this part
 age = 25
+# age = age + 1
 total_stages = 23
 stage_timeFrame = 1  # in years
 # The initial Probabilities
