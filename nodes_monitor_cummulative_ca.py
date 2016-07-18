@@ -8,13 +8,13 @@ import math
 pVar = -1.0
 dVar = -2.0
 
-cCHB = 1483
-cCirr = 4414
-cDecompCirr = 11690
-cEntecavir = 8400
-cHCC = 46538
-cLT = 182040
-cMonitor = 710
+cCHB = 693
+cCirr = 2035
+cDecompCirr = 7068
+cEntecavir = 5987
+cHCC = 15600
+cLT = 125000
+cMonitor = 120
 discountC = 0.03
 discountU = 0.03
 uCHB = 0.85
@@ -23,14 +23,13 @@ uCHBseroclearance = 0.99
 uResolution = 1
 uSVR = 1
 uSeroclearance = 1
-cTenofovir = 11964
 
-tested_rate = 0.346
-followup_rate = 0.57
-treatment_rate = 0.30
+tested_rate = 0.58
+followup_rate = 0.587
+treatment_rate = 0.33
 
-p_adherence = 0.85
-p_monitor = 0.351
+p_adherence = 1
+p_monitor = 1
 
 # Touch this part
 cohortPop = 100
