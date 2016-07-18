@@ -8,9 +8,9 @@ Markov Model Emulator of Hepatitis B
 from nodes_monitor_e1 import *
 
 # Touch this part
-age = 25
+age = 24
 # age = age + 1
-total_stages = 23
+total_stages = 15
 stage_timeFrame = 1  # in years
 # The initial Probabilities
 initialList = [Node36(0), Node02(0.0762), Node04(0.0176), Node05(0.0187), Node06(0), Node26(0.3102), Node28(0.2794), Node29(0.2979), Node30(0)]
