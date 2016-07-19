@@ -4,7 +4,7 @@ Made July 2015
 Markov Model Emulator of Hepatitis B
 '''
 
-from nodes_monitor import *
+from nodes_monitor_preious import *
 
 # Touch this part
 age = 25
