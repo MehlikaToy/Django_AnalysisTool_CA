@@ -11,7 +11,7 @@ age = 25
 total_stages = 20
 stage_timeFrame = 1  # in years
 # The initial Probabilities
-initialList = [Node02(0.21), Node04(0.019), Node05(0.012), Node06(0.013), Node26(0.4), Node28(0.15), Node29(0.09), Node30(0.106)]
+initialList = [Node02(0.0762), Node04(0.0176), Node05(0.0187), Node06(0), Node26(0.3102), Node28(0.2794), Node29(0.2979), Node30(0)]
 #initialList = getInitialNodes(age)
 
 
