@@ -7,11 +7,12 @@ Markov Model Emulator of Hepatitis B
 from nodes_monitor_CA import *
 
 # Touch this part
-age = 35
+age = 45
 total_stages = 20
 stage_timeFrame = 1  # in years
 # The initial Probabilities
-initialList = [Node36(0), Node02(0.0762), Node04(0.0176), Node05(0.0187), Node06(0), Node26(0.3102), Node28(0.2794), Node29(0.2979), Node30(0)]
+initialList = [Node36(0), Node02(0.0998), Node04(0.0060), Node05(0.0209), Node06(0.0014), Node26(0.4060), Node28(0.0959), Node29(0.3327), Node30(0.0373)]
+cohortPop = 10000
 #initialList = getInitialNodes(age)
 
 
@@ -64,11 +65,26 @@ for curr_stage in range(1, total_stages+1):
 
     newList = trimList(newList)
 
+   # for node in newList:
+     #   if not str(node.getVarName()) in cummDict:
+     #       cummDict[str(node.getVarName())] = node.getOriginValue()
+     #   else:
+      #      cummDict[str(node.getVarName())] += (node.getOriginValue())
+
+    def getCummDict(query):
+        try:
+            return cummDict[query]
+        except:
+            return 0
+
     for node in newList:
-        if not str(node.getVarName()) in cummDict:
-            cummDict[str(node.getVarName())] = node.getOriginValue()
-        else:
-            cummDict[str(node.getVarName())] += (node.getOriginValue())
+        try:
+            cummDict[node.getVarName()] += (node.getOriginValue() - guacDict[node.getVarName()]) * cohortPop
+        except:
+            try:
+                cummDict[node.getVarName()] += node.getOriginValue() * cohortPop
+            except:
+                cummDict[node.getVarName()] = node.getOriginValue() * cohortPop
 
 
     print "====================================================\n"
