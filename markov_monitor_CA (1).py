@@ -11,8 +11,8 @@ age = 45
 total_stages = 20
 stage_timeFrame = 1  # in years
 # The initial Probabilities
-initialList = [Node36(0), Node02(0.0998), Node04(0.0060), Node05(0.0209), Node06(0.0014), Node26(0.4060), Node28(0.0959), Node29(0.3327), Node30(0.0373)]
-cohortPop = 10000
+initialList = [Node36(0), Node02(0.0998), Node04(0.0060), Node05(0.0209), Node06(0.0014), Node26(0.4060), Node28(0.0959), Node29(0.3327), Node30(0.0373), Node23(0)]
+cohortPop = 1
 #initialList = getInitialNodes(age)
 
 
@@ -77,24 +77,36 @@ for curr_stage in range(1, total_stages+1):
         except:
             return 0
 
+    cummDict_copy = cummDict        
+
     for node in newList:
+
         try:
-            cummDict[node.getVarName()] += (node.getOriginValue() - guacDict[node.getVarName()]) * cohortPop
+            cummDict[node.getVarName()] += (node.getOriginValue() - cummDict_copy[node.getVarName()]) * cohortPop
         except:
             try:
                 cummDict[node.getVarName()] += node.getOriginValue() * cohortPop
             except:
                 cummDict[node.getVarName()] = node.getOriginValue() * cohortPop
 
+    cummDict["HCC_Total"] = cummDict["HCC"]+cummDict["HCC NH"]
+    cummDict["Cirrhosis_Total"] = cummDict["Cirrohosis Initial Rx"]+cummDict["Cirrhosis NH"]
+    cummDict["Death_Total"] = cummDict["Death HBV"]+cummDict["Death HBV NH"]
+
 
     print "====================================================\n"
     print "                     STAGE:", curr_stage
     print "                     AGE:", age
     printList(newList)
-    print "Cumulative States:", cummDict
+    print "Cumulative States:"
+
+    print "Death", cummDict["Death_Total"]
+    print "HCC", cummDict["HCC_Total"]
+
     print ""
 
     age += stage_timeFrame
+    dummy = raw_input("> ")
 
 if round(sumList(initialList), 10) == round(sumList(newList), 10):
     print "No Data Leak"
