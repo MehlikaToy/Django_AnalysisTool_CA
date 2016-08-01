@@ -225,8 +225,8 @@ class Node01(BasicNode):
         self.probValUT =  [pVar  , 0.00155     , dVar]
         self.probValAFF = [pVar  , 0.00155  , dVar]
 
-pMonitor = 1
-pAdherence = 1
+pMonitor = 0.351
+pAdherence = 0.85
 
 class Node02(BasicNode):
 
