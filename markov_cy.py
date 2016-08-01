@@ -187,7 +187,15 @@ def markovMain(age = 49, total_stages = 40, endemicity = 3, stage_timeFrame = 1,
     except:
         pass
 
-    markovMain(age = 49, total_stages = 40, endemicity = 3, stage_timeFrame = 1, initialList=[])
-
     return {'output': output, 'finalList': finalList, 'DeathHBV': DeathHBV, 'Cirrhosis': Cirrhosis, 'HCC': HCC, 'LT': LT}
+
+
+markovMain(age = 49, total_stages = 40, endemicity = 3, stage_timeFrame = 1, initialList=[])
+
+
+
+
+
+
+
 
