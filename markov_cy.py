@@ -10,13 +10,6 @@ from nodes_monitor_CA import *
 def markovMain(age = 49, total_stages = 40, endemicity = 3, stage_timeFrame = 1, initialList=[]):
 
 
-    print '>>> INITIAL LIST Stage: BASE, Age: %s' % (age)
-    printList(initialList)
-    print '>>> COST'
-    printCost(initialList, 0, total_stages)
-    print '>>> UTILITY'
-    printUtility(initialList, 0, total_stages, age)
-
     # Don't touch this part
     cummDict = {}
     oldList = initialList
@@ -188,9 +181,6 @@ def markovMain(age = 49, total_stages = 40, endemicity = 3, stage_timeFrame = 1,
         pass
 
     return {'output': output, 'finalList': finalList, 'DeathHBV': DeathHBV, 'Cirrhosis': Cirrhosis, 'HCC': HCC, 'LT': LT}
-
-
-markovMain(age = 49, total_stages = 40, endemicity = 3, stage_timeFrame = 1, initialList=[])
 
 
 
